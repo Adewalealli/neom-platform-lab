@@ -1,0 +1,58 @@
+# Local pre-Kubernetes checkpoint. Separate project-scoped network and database volume.
+name: neom-platform-lab
+services:
+  db:
+    build: ./db
+    image: neom-platform-lab-db:0.1.0
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_USER: labuser
+      POSTGRES_PASSWORD: ${DB_PASS:?Create the local .env file first}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # No published database port. This does not use fai-atlas-postgres or port 5433.
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -h 127.0.0.1 -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    mem_limit: 512m
+    cpus: 0.5
+    stop_grace_period: 30s
+
+  api:
+    build: ./api
+    image: neom-platform-lab-api:0.1.0
+    environment:
+      PORT: "3000"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: appdb
+      DB_USER: labuser
+      DB_PASS: ${DB_PASS:?Create the local .env file first}
+    ports:
+      - "127.0.0.1:18080:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    cpus: 0.5
+    stop_grace_period: 15s
+
+volumes:
+  pgdata:

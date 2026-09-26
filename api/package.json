@@ -1,0 +1,12 @@
+{
+  "name": "neom-platform-lab-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Node.js and PostgreSQL workload for the NEOM platform-engineering lab",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node app.js",
+    "test": "node --test"
+  },
+  "dependencies": { "pg": "8.16.3" }
+}

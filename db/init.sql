@@ -1,0 +1,7 @@
+-- This entrypoint script runs only when PostgreSQL initializes an empty data directory.
+CREATE TABLE items (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+INSERT INTO items(name) VALUES ('apple'), ('banana'), ('cherry');
