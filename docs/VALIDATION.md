@@ -21,3 +21,17 @@ Therefore no fabricated package-lock.json is included. `lab_lock` generates it u
 network before the Dockerfile uses `npm ci`. Direct dependency pg is pinned to 8.16.3.
 
 The first user checkpoint must supply the Docker/PostgreSQL/HTTP evidence above before marking it complete.
+
+## Kubernetes API Replica Failure Test
+
+Tested application availability while deliberately deleting one API Pod.
+
+- API replicas before test: 2
+- Traffic path: nginx Ingress -> api-service -> API Pods
+- Deleted one API Pod during active HTTP traffic
+- 15/15 requests returned HTTP 200
+- ReplicaSet automatically created a replacement Pod
+- Deployment returned to 2/2 Ready
+- PostgreSQL remained available throughout
+
+Result: application remained available during a single API replica failure.
