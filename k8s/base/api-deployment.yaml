@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: neom-platform-lab-api:0.1.0
+          image: ghcr.io/adewalealli/neom-platform-lab-api:f940ee6c54a9b270452fe7786a772a0b301f7a39
           imagePullPolicy: IfNotPresent
 
           ports:
