@@ -35,3 +35,14 @@ Tested application availability while deliberately deleting one API Pod.
 - PostgreSQL remained available throughout
 
 Result: application remained available during a single API replica failure.
+
+## Security Boundary Validation
+
+- API and PostgreSQL use dedicated ServiceAccounts
+- Service account token automount disabled
+- Verified API Pod has no mounted Kubernetes API token
+- Added NetworkPolicy allowing PostgreSQL ingress only from Pods labeled app=api on TCP 5432
+- Test intruder Pod could not reach postgres-service
+- API Pod continued to query PostgreSQL successfully
+
+Result: Kubernetes API credentials were reduced and database network access was restricted without breaking the application.

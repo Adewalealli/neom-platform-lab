@@ -23,6 +23,7 @@ spec:
         app: api
 
     spec:
+      serviceAccountName: api-sa      
       containers:
         - name: api
           image: ghcr.io/adewalealli/neom-platform-lab-api:f940ee6c54a9b270452fe7786a772a0b301f7a39
