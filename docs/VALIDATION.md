@@ -46,3 +46,21 @@ Result: application remained available during a single API replica failure.
 - API Pod continued to query PostgreSQL successfully
 
 Result: Kubernetes API credentials were reduced and database network access was restricted without breaking the application.
+
+## Horizontal Pod Autoscaling Validation
+
+Configured API HPA:
+- CPU target: 20% of requested CPU
+- Minimum replicas: 2
+- Maximum replicas: 6
+
+Generated sustained HTTP load against api-service.
+
+Observed:
+- CPU utilization rose above 200% of request
+- HPA scaled API from 2 -> 4 -> 6 replicas
+- maxReplicas limited additional scaling
+- After removing load, utilization fell below target
+- HPA scaled API from 6 -> 4 -> 2 replicas
+
+Result: API automatically scaled up under sustained CPU demand and returned to minimum capacity after demand ended.
